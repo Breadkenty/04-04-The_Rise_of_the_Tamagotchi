@@ -4,6 +4,7 @@ using System.Linq;
 using _04_04_The_Rise_of_the_Tamagotchi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
 {
@@ -19,17 +20,17 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Pet>> GetAll()
+        public async Task<ActionResult<IEnumerable<Pet>>> GetAllAsync()
         {
-            var allThePets = _context.Pets;
+            var allThePets = await _context.Pets.ToListAsync();
 
             return Ok(allThePets);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Pet> GetById(int id)
+        public async Task<ActionResult<Pet>> GetByIdAsync(int id)
         {
-            var selectedPet = _context.Pets.FirstOrDefault(pet => pet.Id == id);
+            var selectedPet = await FindPetAsync(id);
 
             if (selectedPet == null)
             {
@@ -40,7 +41,7 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Pet> CreateNewPet(Pet petToCreate)
+        public async Task<ActionResult<Pet>> CreateNewPetAsync(Pet petToCreate)
         {
 
             // var errorMessage = new
@@ -51,38 +52,33 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
             // return UnprocessableEntity(errorMessage);
 
             _context.Pets.Add(petToCreate);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(null, null, petToCreate);
         }
 
         [HttpPut("{id}")]
-        public ActionResult<Pet> Update(int id, Pet petUpdate)
+        public async Task<ActionResult<Pet>> UpdateAsync(int id, Pet petUpdate)
         {
-            var selectedPet = _context.Pets.FirstOrDefault(pet => pet.Id == id);
-
-            if (selectedPet == null)
+            if (id != petUpdate.Id)
             {
-                return NotFound();
+                var errorMessage = new
+                {
+                    message = "Error message"
+                };
+                return BadRequest(errorMessage);
             }
 
-            selectedPet.Name = petUpdate.Name;
-            selectedPet.Birthday = petUpdate.Birthday;
-            selectedPet.HungerLevel = petUpdate.HungerLevel;
-            selectedPet.HappinessLevel = petUpdate.HappinessLevel;
-            selectedPet.LastInteracted = petUpdate.LastInteracted;
-            selectedPet.IsDead = petUpdate.IsDead;
-
-            _context.Entry(selectedPet).State = EntityState.Modified;
-            _context.SaveChanges();
+            _context.Entry(petUpdate).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
             return Ok(petUpdate);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<Pet> Delete(int id)
+        public async Task<ActionResult<Pet>> DeleteAsync(int id)
         {
-            var selectedPet = _context.Pets.FirstOrDefault(pet => pet.Id == id);
+            var selectedPet = await FindPetAsync(id);
 
             if (selectedPet == null)
             {
@@ -90,9 +86,14 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
             }
 
             _context.Pets.Remove(selectedPet);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(selectedPet);
+        }
+
+        private async Task<Pet> FindPetAsync(int id)
+        {
+            return await _context.Pets.FirstOrDefaultAsync(pet => pet.Id == id);
         }
 
     }
