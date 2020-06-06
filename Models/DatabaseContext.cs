@@ -7,11 +7,13 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Models
 {
     public partial class DatabaseContext : DbContext
     {
+        public DbSet<Pet> Pets { get; set; }
+        
         // Change this if you want to have a different database name in development
         private static string DEVELOPMENT_DATABASE_NAME = "_04_04_The_Rise_of_the_TamagotchiDatabase";
 
         // Change this to true if you want to have logging of SQL statements in development
-        private static bool LOG_SQL_STATEMENTS_IN_DEVELOPMENT = false;
+        private static bool LOG_SQL_STATEMENTS_IN_DEVELOPMENT = true;
 
 
 
