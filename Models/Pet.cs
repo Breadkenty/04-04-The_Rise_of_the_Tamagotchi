@@ -7,4 +7,6 @@ public class Pet
     public DateTime Birthday { get; set; }
     public int HungerLevel { get; set; }
     public int HappinessLevel { get; set; }
+    public DateTime LastInteracted { get; set; }
+    public bool IsDead { get; set; }
 }
