@@ -106,6 +106,11 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
             selectedPet.HungerLevel += 3;
             selectedPet.LastInteracted = DateTime.Now;
 
+            if (DateTime.Now > selectedPet.LastInteracted.AddDays(+3))
+            {
+                selectedPet.IsDead = true;
+            }
+
             await _context.SaveChangesAsync();
             return Ok(selectedPet);
         }
@@ -118,6 +123,11 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
             selectedPet.HappinessLevel += 3;
             selectedPet.HungerLevel -= 3;
             selectedPet.LastInteracted = DateTime.Now;
+
+            if (DateTime.Now > selectedPet.LastInteracted.AddDays(+3))
+            {
+                selectedPet.IsDead = true;
+            }
 
             if (selectedPet.HungerLevel < 0)
             {
@@ -135,6 +145,11 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
 
             selectedPet.HappinessLevel -= 5;
             selectedPet.LastInteracted = DateTime.Now;
+
+            if (DateTime.Now > selectedPet.LastInteracted.AddDays(+3))
+            {
+                selectedPet.IsDead = true;
+            }
 
             if (selectedPet.HappinessLevel < 0)
             {
