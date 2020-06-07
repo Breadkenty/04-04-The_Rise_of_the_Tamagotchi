@@ -22,7 +22,7 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Pet>>> GetAllAsync()
         {
-            var allThePets = await _context.Pets.ToListAsync();
+            var allThePets = await _context.Pets.Where(pet => pet.IsDead == false).ToListAsync();
 
             return Ok(allThePets);
         }
@@ -97,66 +97,52 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
         }
 
 
-        // [HttpPut]
-        // public async Task<ActionResult<Pet>> PlaytimesAsync(int id, Pet petUpdate)
-        // {
-        //     if (id != petUpdate.Id)
-        //     {
-        //         var errorMessage = new
-        //         {
-        //             message = "Error message"
-        //         };
-        //         return BadRequest(errorMessage);
-        //     }
+        [HttpPut("{id}/play")]
+        public async Task<ActionResult<Pet>> Playtimes(int id)
+        {
+            var selectedPet = await FindPetAsync(id);
 
-        //     petUpdate.HappinessLevel += 5;
-        //     petUpdate.HungerLevel += 3;
+            selectedPet.HappinessLevel += 5;
+            selectedPet.HungerLevel += 3;
+            selectedPet.LastInteracted = DateTime.Now;
 
-        //     _context.Entry(petUpdate).State = EntityState.Modified;
-        //     await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+            return Ok(selectedPet);
+        }
 
-        //     return Ok(petUpdate);
-        // }
+        [HttpPut("{id}/feed")]
+        public async Task<ActionResult<Pet>> Feedings(int id)
+        {
+            var selectedPet = await FindPetAsync(id);
 
-        // [HttpPut("{id}")]
-        // public async Task<ActionResult<Pet>> FeedingsAsync(int id, Pet petUpdate)
-        // {
-        //     if (id != petUpdate.Id)
-        //     {
-        //         var errorMessage = new
-        //         {
-        //             message = "Error message"
-        //         };
-        //         return BadRequest(errorMessage);
-        //     }
+            selectedPet.HappinessLevel += 3;
+            selectedPet.HungerLevel -= 3;
+            selectedPet.LastInteracted = DateTime.Now;
 
-        //     petUpdate.HappinessLevel += 3;
-        //     petUpdate.HungerLevel -= 3;
+            if (selectedPet.HungerLevel < 0)
+            {
+                selectedPet.HungerLevel = 0;
+            }
 
-        //     _context.Entry(petUpdate).State = EntityState.Modified;
-        //     await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+            return Ok(selectedPet);
+        }
 
-        //     return Ok(petUpdate);
-        // }
+        [HttpPut("{id}/scold")]
+        public async Task<ActionResult<Pet>> Scoldings(int id)
+        {
+            var selectedPet = await FindPetAsync(id);
 
-        // [HttpPut("{id}")]
-        // public async Task<ActionResult<Pet>> ScoldingsAsync(int id, Pet petUpdate)
-        // {
-        //     if (id != petUpdate.Id)
-        //     {
-        //         var errorMessage = new
-        //         {
-        //             message = "Error message"
-        //         };
-        //         return BadRequest(errorMessage);
-        //     }
+            selectedPet.HappinessLevel -= 5;
+            selectedPet.LastInteracted = DateTime.Now;
 
-        //     petUpdate.HappinessLevel -= 5;
+            if (selectedPet.HappinessLevel < 0)
+            {
+                selectedPet.HappinessLevel = 0;
+            }
 
-        //     _context.Entry(petUpdate).State = EntityState.Modified;
-        //     await _context.SaveChangesAsync();
-
-        //     return Ok(petUpdate);
-        // }
+            await _context.SaveChangesAsync();
+            return Ok(selectedPet);
+        }
     }
 }

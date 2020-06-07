@@ -9,5 +9,4 @@ public class Pet
     public int HappinessLevel { get; set; }
     public DateTime LastInteracted { get; set; }
     public bool IsDead { get; set; }
-
 }
