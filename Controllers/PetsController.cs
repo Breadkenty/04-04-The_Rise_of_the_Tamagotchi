@@ -96,5 +96,67 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
             return await _context.Pets.FirstOrDefaultAsync(pet => pet.Id == id);
         }
 
+
+        // [HttpPut]
+        // public async Task<ActionResult<Pet>> PlaytimesAsync(int id, Pet petUpdate)
+        // {
+        //     if (id != petUpdate.Id)
+        //     {
+        //         var errorMessage = new
+        //         {
+        //             message = "Error message"
+        //         };
+        //         return BadRequest(errorMessage);
+        //     }
+
+        //     petUpdate.HappinessLevel += 5;
+        //     petUpdate.HungerLevel += 3;
+
+        //     _context.Entry(petUpdate).State = EntityState.Modified;
+        //     await _context.SaveChangesAsync();
+
+        //     return Ok(petUpdate);
+        // }
+
+        // [HttpPut("{id}")]
+        // public async Task<ActionResult<Pet>> FeedingsAsync(int id, Pet petUpdate)
+        // {
+        //     if (id != petUpdate.Id)
+        //     {
+        //         var errorMessage = new
+        //         {
+        //             message = "Error message"
+        //         };
+        //         return BadRequest(errorMessage);
+        //     }
+
+        //     petUpdate.HappinessLevel += 3;
+        //     petUpdate.HungerLevel -= 3;
+
+        //     _context.Entry(petUpdate).State = EntityState.Modified;
+        //     await _context.SaveChangesAsync();
+
+        //     return Ok(petUpdate);
+        // }
+
+        // [HttpPut("{id}")]
+        // public async Task<ActionResult<Pet>> ScoldingsAsync(int id, Pet petUpdate)
+        // {
+        //     if (id != petUpdate.Id)
+        //     {
+        //         var errorMessage = new
+        //         {
+        //             message = "Error message"
+        //         };
+        //         return BadRequest(errorMessage);
+        //     }
+
+        //     petUpdate.HappinessLevel -= 5;
+
+        //     _context.Entry(petUpdate).State = EntityState.Modified;
+        //     await _context.SaveChangesAsync();
+
+        //     return Ok(petUpdate);
+        // }
     }
 }
