@@ -19,12 +19,21 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
             _context = context;
         }
 
+        private async Task<Pet> FindPetAsync(int id)
+        {
+            return await _context.Pets.FirstOrDefaultAsync(pet => pet.Id == id);
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Pet>>> GetAllAsync()
         {
-            var allThePets = await _context.Pets.Where(pet => pet.IsDead == false).ToListAsync();
+            return Ok(await _context.Pets.ToListAsync());
+        }
 
-            return Ok(allThePets);
+        [HttpGet("/Pets_alive")]
+        public async Task<ActionResult<IEnumerable<Pet>>> GetAllAlivePetsAsync()
+        {
+            return Ok(await _context.Pets.Where(pet => pet.IsDead == false).ToListAsync());
         }
 
         [HttpGet("{id}")]
@@ -40,16 +49,14 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
             return Ok(selectedPet);
         }
 
-        [HttpPost]
+        [HttpPost("/Create_new_pet")]
         public async Task<ActionResult<Pet>> CreateNewPetAsync(Pet petToCreate)
         {
-
-            // var errorMessage = new
-            // {
-            //     message = $"This is an error message"
-            // };
-
-            // return UnprocessableEntity(errorMessage);
+            petToCreate.Birthday = DateTime.Now;
+            petToCreate.HungerLevel = 0;
+            petToCreate.HappinessLevel = 0;
+            petToCreate.LastInteracted = DateTime.Now;
+            petToCreate.IsDead = false;
 
             _context.Pets.Add(petToCreate);
             await _context.SaveChangesAsync();
@@ -57,26 +64,8 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
             return CreatedAtAction(null, null, petToCreate);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Pet>> UpdateAsync(int id, Pet petUpdate)
-        {
-            if (id != petUpdate.Id)
-            {
-                var errorMessage = new
-                {
-                    message = "Error message"
-                };
-                return BadRequest(errorMessage);
-            }
-
-            _context.Entry(petUpdate).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return Ok(petUpdate);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Pet>> DeleteAsync(int id)
+        [HttpPost("{id}/Play")]
+        public async Task<ActionResult<Pet>> PlaytimesAsync(int id)
         {
             var selectedPet = await FindPetAsync(id);
 
@@ -85,40 +74,28 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
                 return NotFound();
             }
 
-            _context.Pets.Remove(selectedPet);
-            await _context.SaveChangesAsync();
-
-            return Ok(selectedPet);
-        }
-
-        private async Task<Pet> FindPetAsync(int id)
-        {
-            return await _context.Pets.FirstOrDefaultAsync(pet => pet.Id == id);
-        }
-
-
-        [HttpPut("{id}/play")]
-        public async Task<ActionResult<Pet>> Playtimes(int id)
-        {
-            var selectedPet = await FindPetAsync(id);
-
             selectedPet.HappinessLevel += 5;
             selectedPet.HungerLevel += 3;
-            selectedPet.LastInteracted = DateTime.Now;
 
             if (DateTime.Now > selectedPet.LastInteracted.AddDays(+3))
             {
                 selectedPet.IsDead = true;
             }
+            selectedPet.LastInteracted = DateTime.Now;
 
             await _context.SaveChangesAsync();
             return Ok(selectedPet);
         }
 
-        [HttpPut("{id}/feed")]
-        public async Task<ActionResult<Pet>> Feedings(int id)
+        [HttpPost("{id}/Feed")]
+        public async Task<ActionResult<Pet>> FeedingsAsync(int id)
         {
             var selectedPet = await FindPetAsync(id);
+
+            if (selectedPet == null)
+            {
+                return NotFound();
+            }
 
             selectedPet.HappinessLevel += 3;
             selectedPet.HungerLevel -= 3;
@@ -138,10 +115,15 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
             return Ok(selectedPet);
         }
 
-        [HttpPut("{id}/scold")]
-        public async Task<ActionResult<Pet>> Scoldings(int id)
+        [HttpPost("{id}/Scold")]
+        public async Task<ActionResult<Pet>> ScoldingsAsync(int id)
         {
             var selectedPet = await FindPetAsync(id);
+
+            if (selectedPet == null)
+            {
+                return NotFound();
+            }
 
             selectedPet.HappinessLevel -= 5;
             selectedPet.LastInteracted = DateTime.Now;
@@ -159,5 +141,22 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
             await _context.SaveChangesAsync();
             return Ok(selectedPet);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Pet>> DeleteAsync(int id)
+        {
+            var selectedPet = await FindPetAsync(id);
+
+            if (selectedPet == null)
+            {
+                return NotFound();
+            }
+
+            _context.Pets.Remove(selectedPet);
+            await _context.SaveChangesAsync();
+
+            return Ok(selectedPet);
+        }
+
     }
 }
