@@ -12,6 +12,7 @@ using _04_04_The_Rise_of_the_Tamagotchi.Models;
 using System.Diagnostics;
 using System.Data.Common;
 using System.Runtime.InteropServices;
+using System.Net.Http;
 
 namespace _04_04_The_Rise_of_the_Tamagotchi
 {

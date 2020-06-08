@@ -25,7 +25,7 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pet>>> GetAllAsync()
+        public async Task<ActionResult<IEnumerable<Pet>>> GetAllPetsAsync()
         {
             return Ok(await _context.Pets.ToListAsync());
         }
@@ -37,7 +37,7 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pet>> GetByIdAsync(int id)
+        public async Task<ActionResult<Pet>> GetPetByIdAsync(int id)
         {
             var selectedPet = await FindPetAsync(id);
 
@@ -50,7 +50,7 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
         }
 
         [HttpPost("/Create_new_pet")]
-        public async Task<ActionResult<Pet>> CreateNewPetAsync(Pet petToCreate)
+        public async Task<ActionResult<Pet>> PostNewPetAsync(Pet petToCreate)
         {
             petToCreate.Birthday = DateTime.Now;
             petToCreate.HungerLevel = 0;
@@ -65,7 +65,7 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
         }
 
         [HttpPost("{id}/Play")]
-        public async Task<ActionResult<Pet>> PlaytimesAsync(int id)
+        public async Task<ActionResult<Pet>> PostPlayPetByIdAsync(int id)
         {
             var selectedPet = await FindPetAsync(id);
 
@@ -88,7 +88,7 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
         }
 
         [HttpPost("{id}/Feed")]
-        public async Task<ActionResult<Pet>> FeedingsAsync(int id)
+        public async Task<ActionResult<Pet>> PostFeedPetByIdAsync(int id)
         {
             var selectedPet = await FindPetAsync(id);
 
@@ -116,7 +116,7 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
         }
 
         [HttpPost("{id}/Scold")]
-        public async Task<ActionResult<Pet>> ScoldingsAsync(int id)
+        public async Task<ActionResult<Pet>> PostScoldPetByIdAsync(int id)
         {
             var selectedPet = await FindPetAsync(id);
 
@@ -143,7 +143,7 @@ namespace _04_04_The_Rise_of_the_Tamagotchi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Pet>> DeleteAsync(int id)
+        public async Task<ActionResult<Pet>> DeletePetByIdAsync(int id)
         {
             var selectedPet = await FindPetAsync(id);
 
