@@ -3,6 +3,8 @@
 **_Welcome to Tamagotchi API!_**
 
 This API is used to manage a pet database by the following properties:
+Checkout the console app that manages the data in the API:
+https://github.com/Breadkenty/04-04-Rise_of_the_Tamagotchi_Console_App
 
 **Pet**
 
